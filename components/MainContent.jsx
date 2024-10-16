@@ -1,7 +1,8 @@
 "use client";
 import NavBar from "./NavBar";
 import { ThemeProvider } from "./theme-provider";
-export default function MainContent({ children }) {
+
+export default function MainContent({ children, activeUser }) {
   return (
     <>
       <ThemeProvider
@@ -11,7 +12,7 @@ export default function MainContent({ children }) {
         disableTransitionOnChange
       >
         <div className="mx-auto">
-          <NavBar />
+          <NavBar activeUser={activeUser} />
         </div>
         {children}
       </ThemeProvider>

@@ -13,8 +13,10 @@ import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 
 import ModeToggle from "./ModeToggle";
+import AuthLinks from "./AuthLinks";
+import { Button } from "./ui/button";
 
-export default function NavBar() {
+export default async function NavBar({ activeUser }) {
   return (
     <NavigationMenu className="border border-solid p-2 rounded-lg">
       <NavigationMenuList className="flex items-center space-x-4">
@@ -35,6 +37,8 @@ export default function NavBar() {
             </NavigationMenuLink>
           </Link>
           <ModeToggle />
+          {/* <Button>{activeUser ? "log out" : "log in"}</Button> */}
+          <AuthLinks activeUser={activeUser} />
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
