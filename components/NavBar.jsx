@@ -9,7 +9,11 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
-
+import {
+  LoginLink,
+  RegisterLink,
+  LogoutLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 import Link from "next/link";
 
 import ModeToggle from "./ModeToggle";
@@ -37,8 +41,26 @@ export default async function NavBar({ activeUser }) {
             </NavigationMenuLink>
           </Link>
           <ModeToggle />
-          {/* <Button>{activeUser ? "log out" : "log in"}</Button> */}
-          <AuthLinks activeUser={activeUser} />
+          {activeUser ? (
+            <LogoutLink>
+              <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 w-auto whitespace-nowrap">
+                Sign out
+              </button>
+            </LogoutLink>
+          ) : (
+            <div className="flex space-x-4">
+              <LoginLink>
+                <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-auto whitespace-nowrap">
+                  Sign in
+                </button>
+              </LoginLink>
+              <RegisterLink>
+                <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-auto whitespace-nowrap">
+                  Sign up
+                </button>
+              </RegisterLink>
+            </div>
+          )}
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

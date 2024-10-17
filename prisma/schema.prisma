@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model MacroFitUser {
+  id         String   @id
+  first_name String?
+  last_name  String?
+  email      String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  MFNutrition MFNutrition[] @relation("UserNutrition")
+}
+
+model MFNutrition {
+  id                   String       @default(cuid()) @id
+  userId               String       // Foreign key reference to MacroFitUser
+  height               Float
+  gender               String
+  activityLevel        String
+  currentWeight        Float
+  currentBodyFat       Float
+  goalWeight           Float
+  goalBodyFat          Float
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  isActive             Boolean      @default(false)
+
+  user                 MacroFitUser @relation("UserNutrition", fields: [userId], references: [id])
+}
