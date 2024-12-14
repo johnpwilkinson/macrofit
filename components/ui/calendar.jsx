@@ -1,19 +1,48 @@
 "use client";
-import * as React from "react"
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
-import { DayPicker } from "react-day-picker"
+import * as React from "react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { DayPicker } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
 
-function Calendar({
-  className,
-  classNames,
-  showOutsideDays = true,
-  ...props
-}) {
+function Calendar({ className, classNames, showOutsideDays = true, ...props }) {
+  const bodyMetricDates = props.bodyMetricDates.map((date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0); // Normalize to midnight
+    return d;
+  });
+
+  const workoutDates = props.workoutDates.map((date) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0); // Normalize to midnight
+    return d;
+  });
+  const isBoth = (date) =>
+    bodyMetricDates.some(
+      (bodyMetricDate) => bodyMetricDate.getTime() === date.getTime()
+    ) &&
+    workoutDates.some(
+      (workoutDate) => workoutDate.getTime() === date.getTime()
+    );
   return (
-    (<DayPicker
+    <DayPicker
+      modifiers={{
+        body_metric: (date) =>
+          bodyMetricDates.some(
+            (bodyMetricDate) => bodyMetricDate.getTime() === date.getTime()
+          ),
+        workout: (date) =>
+          workoutDates.some(
+            (workoutDate) => workoutDate.getTime() === date.getTime()
+          ),
+        both: (date) => isBoth(date),
+      }}
+      modifiersClassNames={{
+        body_metric: "bg-border text-accent-foreground rounded-md",
+        workout: "bg-border text-accent-foreground rounded-md",
+        both: "bg-border text-accent-foreground rounded-md border border-yellow-500",
+      }}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
@@ -46,7 +75,7 @@ function Calendar({
         day_range_start: "day-range-start",
         day_range_end: "day-range-end",
         day_selected:
-          "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
+          "border border-primary text-primary hover:bg-primary hover:text-primary-foreground  focus:text-primary",
         day_today: "bg-accent text-accent-foreground",
         day_outside:
           "day-outside text-muted-foreground opacity-50  aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",
@@ -54,15 +83,19 @@ function Calendar({
         day_range_middle:
           "aria-selected:bg-accent aria-selected:text-accent-foreground",
         day_hidden: "invisible",
+        day_body_metric: "bg-green-500 text-accent-foreground", // Or debug with red for visibility
+        cell: " box-border", // Adjust the padding value as needed
+
         ...classNames,
       }}
       components={{
         IconLeft: ({ ...props }) => <ChevronLeftIcon className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRightIcon className="h-4 w-4" />,
       }}
-      {...props} />)
+      {...props}
+    />
   );
 }
-Calendar.displayName = "Calendar"
+Calendar.displayName = "Calendar";
 
-export { Calendar }
+export { Calendar };

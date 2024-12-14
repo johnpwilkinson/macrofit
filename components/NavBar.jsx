@@ -25,6 +25,11 @@ export default async function NavBar({ activeUser }) {
     <NavigationMenu className="border border-solid p-2 rounded-lg">
       <NavigationMenuList className="flex items-center space-x-4">
         <NavigationMenuItem className="flex items-center space-x-4">
+          <Link href="/dashboard" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Dashboard
+            </NavigationMenuLink>
+          </Link>
           <Link href="/nutrition" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Nutrition

@@ -11,7 +11,7 @@ export default function MainContent({ children, activeUser }) {
         enableSystem
         disableTransitionOnChange
       >
-        <div className="mx-auto">
+        <div className="w-full mx-auto">
           <NavBar activeUser={activeUser} />
         </div>
         {children}

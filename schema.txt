@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model MacroFitUser {
+  id          String        @id @default(cuid())
+  first_name  String?
+  last_name   String?
+  email       String        @unique
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?      @updatedAt
+  isMetric    Boolean?
+  BodyMetric  BodyMetric[]  @relation("UserBodyMetrics")
+  MFNutrition MFNutrition[] @relation("UserNutrition")
+
+  FitnessPlan FitnessPlan[] @relation("UserFitnessPlans")
+}
+
+model Exercise {
+  id               String    @id @default(cuid())
+  name             String
+  force            String?
+  level            String?
+  mechanic         String?
+  equipment        String?
+  primaryMuscles   String[]
+  secondaryMuscles String[]
+  instructions     String[]
+  category         String?
+  imageUrls        String[]
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime? @updatedAt
+
+  DayExercise DayExercise[] @relation("ExerciseDayExercises")
+
+  Workout Workout[]
+}
+
+model BodyMetric {
+  id        String       @id @default(cuid())
+  userId    String
+  date      DateTime     @default(now())
+  weight    Float?
+  bodyFat   Float?
+  bmi       Float?
+  waist     Float?
+  hips      Float?
+  neck      Float?
+  bicep     Float?
+  legs      Float?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime?     @updatedAt
+  user      MacroFitUser @relation("UserBodyMetrics", fields: [userId], references: [id])
+}
+
+model MFNutrition {
+  id             String       @id @default(cuid())
+  userId         String
+  height         Float
+  gender         String
+  activityLevel  String
+  currentWeight  Float
+  currentBodyFat Float
+  goalWeight     Float
+  goalBodyFat    Float
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime?     @updatedAt
+  isActive       Boolean      @default(false)
+  endDate        DateTime?
+  carbs          Int
+  dailyCalories  Int
+  fat            Int
+  protein        Int
+  tdee           Int
+  age            Int
+  energyDelta    Int
+  user           MacroFitUser @relation("UserNutrition", fields: [userId], references: [id])
+}
+
+model FitnessPlan {
+  id          String        @id @default(cuid())
+  userId      String
+  name        String
+  daysPerWeek Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?      @updatedAt
+  user        MacroFitUser @relation("UserFitnessPlans", fields: [userId], references: [id])
+  days        Day[]         @relation("FitnessPlanDays")
+}
+
+model Day {
+  id            String        @id @default(cuid())
+  fitnessPlanId String
+  dayNumber     Int           // Day number in the fitness plan (e.g., 1, 2, 3)
+  name          String        // Name of the day (e.g., "Chest and Tris")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?      @updatedAt
+  fitnessPlan   FitnessPlan   @relation("FitnessPlanDays", fields: [fitnessPlanId], references: [id])
+  dayExercises  DayExercise[] @relation("DayExercises")
+
+  Workout Workout[]
+}
+
+
+
+model DayExercise {
+  id         String   @id @default(cuid())
+  dayId      String   // Foreign key referencing Day
+  exerciseId String   // Foreign key referencing Exercise
+  day        Day      @relation("DayExercises", fields: [dayId], references: [id])
+  exercise   Exercise @relation("ExerciseDayExercises", fields: [exerciseId], references: [id])
+}
+
+model Workout {
+  id         String   @id @default(cuid())
+  dayId      String   // Foreign key referencing Day
+  exerciseId String   // Foreign key referencing Exercise
+  weight     Float
+  sets       Int
+  reps       Int
+  date       DateTime @default(now())
+  createdAt  DateTime @default(now())
+  day        Day      @relation(fields: [dayId], references: [id])
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+}

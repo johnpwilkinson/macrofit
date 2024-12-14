@@ -9,28 +9,138 @@ datasource db {
 }
 
 model MacroFitUser {
-  id         String   @id
-  first_name String?
-  last_name  String?
-  email      String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id          String        @id @default(cuid())
+  first_name  String?
+  last_name   String?
+  email       String        @unique
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?     @updatedAt
+  isMetric    Boolean?
+  BodyMetric  BodyMetric[]  @relation("UserBodyMetrics")
+  FitnessPlan FitnessPlan[] @relation("UserFitnessPlans")
   MFNutrition MFNutrition[] @relation("UserNutrition")
 }
 
-model MFNutrition {
-  id                   String       @default(cuid()) @id
-  userId               String       // Foreign key reference to MacroFitUser
-  height               Float
-  gender               String
-  activityLevel        String
-  currentWeight        Float
-  currentBodyFat       Float
-  goalWeight           Float
-  goalBodyFat          Float
-  createdAt            DateTime     @default(now())
-  updatedAt            DateTime     @updatedAt
-  isActive             Boolean      @default(false)
-
-  user                 MacroFitUser @relation("UserNutrition", fields: [userId], references: [id])
+model Exercise {
+  id               String        @id @default(cuid())
+  name             String
+  force            String?
+  level            String?
+  mechanic         String?
+  equipment        String?
+  primaryMuscles   String[]
+  secondaryMuscles String[]
+  instructions     String[]
+  category         String?
+  imageUrls        String[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime?     @updatedAt
+  DayExercise      DayExercise[] @relation("ExerciseDayExercises")
+ 
+  WorkoutExercise WorkoutExercise[]
 }
+
+model BodyMetric {
+  id        String       @id @default(cuid())
+  userId    String
+  date      DateTime     @default(now())
+  weight    Float?
+  bodyFat   Float?
+  bmi       Float?
+  waist     Float?
+  hips      Float?
+  neck      Float?
+  bicep     Float?
+  legs      Float?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime?    @updatedAt
+  user      MacroFitUser @relation("UserBodyMetrics", fields: [userId], references: [id])
+}
+
+model MFNutrition {
+  id             String       @id @default(cuid())
+  userId         String
+  height         Float
+  gender         String
+  activityLevel  String
+  currentWeight  Float
+  currentBodyFat Float
+  goalWeight     Float
+  goalBodyFat    Float
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime?    @updatedAt
+  isActive       Boolean      @default(false)
+  endDate        DateTime?
+  name           String?
+  carbs          Int
+  dailyCalories  Int
+  fat            Int
+  protein        Int
+  tdee           Int
+  age            Int
+  energyDelta    Int
+  user           MacroFitUser @relation("UserNutrition", fields: [userId], references: [id])
+}
+
+model FitnessPlan {
+  id          String       @id @default(cuid())
+  userId      String
+  name        String
+  daysPerWeek Int
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime?    @updatedAt
+  isActive    Boolean?
+  days        Day[]        @relation("FitnessPlanDays")
+  user        MacroFitUser @relation("UserFitnessPlans", fields: [userId], references: [id])
+}
+
+model Day {
+  id            String        @id @default(cuid())
+  fitnessPlanId String
+  dayNumber     Int
+  name          String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
+  fitnessPlan   FitnessPlan   @relation("FitnessPlanDays", fields: [fitnessPlanId], references: [id])
+  dayExercises  DayExercise[] @relation("DayExercises")
+  workouts      Workout[]     @relation("DayWorkouts")
+}
+
+model DayExercise {
+  id         String   @id @default(cuid())
+  dayId      String
+  exerciseId String
+  name       String?
+  day        Day      @relation("DayExercises", fields: [dayId], references: [id])
+  exercise   Exercise @relation("ExerciseDayExercises", fields: [exerciseId], references: [id])
+}
+
+model Workout {
+  id            String           @id @default(cuid())
+  dayId         String
+  notes        String?
+  date          DateTime         @default(now())
+  createdAt     DateTime         @default(now())
+  day           Day              @relation("DayWorkouts", fields: [dayId], references: [id])
+  workoutExercises WorkoutExercise[] @relation("WorkoutExercises") // Relation to WorkoutExercise
+}
+
+model WorkoutExercise {
+  id           String        @id @default(cuid())
+  workoutId    String
+  exerciseId   String
+  workout      Workout       @relation("WorkoutExercises", fields: [workoutId], references: [id])
+  exercise     Exercise      @relation(fields: [exerciseId], references: [id])
+  workoutSets  WorkoutSet[]  @relation("WorkoutSets")  // Relation to WorkoutSet
+}
+
+model WorkoutSet {
+  id          String   @id @default(cuid())
+  workoutExerciseId String
+  setNumber   Int
+  weight      Float
+  reps        Int
+  createdAt   DateTime @default(now())
+  workoutExercise WorkoutExercise @relation("WorkoutSets", fields: [workoutExerciseId], references: [id])
+}
+
