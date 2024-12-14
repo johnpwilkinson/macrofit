@@ -24,8 +24,8 @@ export default function NoData({
       </CardHeader>
       <CardContent className="flex flex-col space-y-4">
         <p className="text-center">
-          Hey {toTitleCase(userFirstName)}, it looks like you don't have any
-          data yet. Let's make a make a{" "}
+          {` Hey ${toTitleCase(userFirstName)}, it looks like you don't have any
+          data yet. Let's make a `}
           <Modal
             title={`${toTitleCase(userFirstName)}'s ${toTitleCase(
               sectionName
@@ -33,9 +33,7 @@ export default function NoData({
             btnTitle={`new ${sectionName} plan`} // Use sectionName here
             desc={"Enter details to build a nutrition plan"}
             btnStyle={"bg-green-600 text-white p-2 font-bold"}
-          >
-            {/* {form} */}
-          </Modal>
+          ></Modal>
         </p>
         {form}
       </CardContent>

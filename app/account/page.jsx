@@ -28,7 +28,7 @@ export default async function Page() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium">{user.given_name}'s info</h3>
+        <h3 className="text-lg font-medium">{`${user.given_name}'s info`}</h3>
       </div>
       <Separator />
       <AccountForm userid={user.id} />

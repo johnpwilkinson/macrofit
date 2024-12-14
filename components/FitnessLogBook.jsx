@@ -43,8 +43,8 @@ export default function FitnessLogBook({ workouts }) {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {exercise.workoutSets.map((set) => (
-                        <TableRow>
+                      {exercise.workoutSets.map((set, index) => (
+                        <TableRow key={index}>
                           <TableCell className="font-medium">
                             {set.setNumber}
                           </TableCell>

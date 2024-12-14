@@ -29,7 +29,7 @@ export default async function Page() {
     <div className="flex flex-col space-y-4 w-full">
       <Card className="w-full">
         <CardHeader>
-          <CardTitle>{user.given_name}'s logbook</CardTitle>
+          <CardTitle>{`${user.given_name}'s logbook`}</CardTitle>
           <CardDescription>your logbook </CardDescription>
         </CardHeader>
         <CardContent></CardContent>

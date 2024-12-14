@@ -109,17 +109,17 @@ export const calculateMacroBreakdown = (plan) => {
 };
 
 // Use it in your component:
-const NutritionDetail = ({ plan }) => {
-  const chartData = calculateMacroBreakdown(plan);
+// const NutritionDetail = ({ plan }) => {
+//   const chartData = calculateMacroBreakdown(plan);
 
-  return (
-    <MyPie
-      title="Macro Breakdown"
-      desc="for current nutritional plan"
-      data={chartData}
-    />
-  );
-};
+//   return (
+//     <MyPie
+//       title="Macro Breakdown"
+//       desc="for current nutritional plan"
+//       data={chartData}
+//     />
+//   );
+// };
 
 export function calculateCalsForMacros(plan) {
   // Destructure relevant values from userData
